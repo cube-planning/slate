@@ -2,13 +2,9 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
   - python
-  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -19,221 +15,520 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Welcome to the Cube API documentation.
 
 # Authentication
 
-> To authorize, use this code:
+Cube uses API keys to allow access to the API. You can receive an access token for a user by providing their email and password to an access token endpoint.
 
-```ruby
-require 'kittn'
+The API expects the access token to be included in all API requests to the server in a header that looks like the following:
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+`Authorization: example-access-token`
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+## Get Access Token
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+r = requests.post('<url>', data={
+    'email': 'user@domain.com',
+    'password': '1234'
+})
+r.json()
 ```
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+> The above command returns JSON structured like this:
+
+```json
+{
+    "access_token": "example-access-token"
+}
 ```
 
-```javascript
-const kittn = require('kittn');
+This endpoint retrieves an access token for a user at a company.
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+Parameter | Description
+--------- | -----------
+email | The user's email address
+password | The password for the user
+
+### HTTP Request
+
+`POST https://dev.planwithcube.com/api/v1/access_token`
+
+# Dimensions
+
+Dimensions store the chart of accounts for a company and outline how their data is structured. All companies have top level dimensions called Account, Scenario, Department, and Time. They also can have custom dimensions.
+
+## Get All Dimensions
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
+    {
+        "id": 5190,
+        "name": "Account",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.896518+00:00"
+    },
+    {
+        "id": 5191,
+        "name": "Balance Sheet",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.915209+00:00"
+    },
+    {
+        "id": 5192,
+        "name": "Income Statement",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.927012+00:00"
+    }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all dimensions for a company.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://dev.planwithcube.com/api/v1/dimensions`
+
+## Get Deepest Dimensions
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": 5421,
+        "name": "Sales and Marketing",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-13T17:07:26.513460+00:00",
+        "children": []
+    },
+    {
+        "id": 5422,
+        "name": "Sports",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-13T17:07:31.190547+00:00",
+        "children": []
+    },
+    {
+        "id": 5196,
+        "name": "Actuals",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.966437+00:00",
+        "children": []
+    }
+]
+```
+
+This endpoint retrieves all the deepest level dimensions for a company.
+
+### HTTP Request
+
+`GET https://dev.planwithcube.com/api/v1/dimensions/deepest`
+
+## Get Dimensions Tree
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": 5190,
+        "name": "Account",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.896518+00:00",
+        "children": [
+            {
+                "id": 5192,
+                "name": "Income Statement",
+                "active": true,
+                "source": null,
+                "formula": null,
+                "created_at": "2019-03-12T12:26:28.927012+00:00",
+                "children": [
+                    {
+                        "id": 5693,
+                        "name": "Revenue",
+                        "active": true,
+                        "source": null,
+                        "formula": null,
+                        "created_at": "2019-03-21T17:27:30.420024+00:00",
+                        "children": [
+                            {
+                                "id": 5695,
+                                "name": "Product Revenue",
+                                "active": true,
+                                "source": null,
+                                "formula": null,
+                                "created_at": "2019-03-21T20:44:45.150093+00:00",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5694,
+                        "name": "COGs",
+                        "active": false,
+                        "source": null,
+                        "formula": null,
+                        "created_at": "2019-03-21T17:27:38.178389+00:00",
+                        "children": [
+                            {
+                                "id": 5696,
+                                "name": "Shirts",
+                                "active": true,
+                                "source": null,
+                                "formula": null,
+                                "created_at": "2019-03-21T21:18:01.786801+00:00",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5700,
+                        "name": "Gross Revenue",
+                        "active": true,
+                        "source": null,
+                        "formula": "<5693>-<5694>+<5701>",
+                        "created_at": "2019-03-23T17:38:31.638926+00:00",
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5193,
+        "name": "Department",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.932454+00:00",
+        "children": [
+            {
+                "id": 5194,
+                "name": "Consolidated Only",
+                "active": true,
+                "source": null,
+                "formula": null,
+                "created_at": "2019-03-12T12:26:28.932990+00:00",
+                "children": []
+            },
+            {
+                "id": 5421,
+                "name": "Sales and Marketing",
+                "active": true,
+                "source": null,
+                "formula": null,
+                "created_at": "2019-03-13T17:07:26.513460+00:00",
+                "children": []
+            }
+        ]
+    }
+]
+```
+
+This endpoint retrieves a companies dimensions structured in their hierarchy.
+
+### HTTP Request
+
+`GET https://dev.planwithcube.com/api/v1/dimensions/tree`
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+inactive | false | If set to true, the result will also include inactive dimensions.
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+# OLAP Cube Data
 
-## Get a Specific Kitten
+The data stored in the OLAP cube for a company, organized by its dimensions.
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
+## Get Data Slices
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
+[
+    {
+        "id": "07c991586dfd4593add48225d06352b6",
+        "value": "1.00",
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 5192,
+                    "name": "Income Statement",
+                    "active": true
+                },
+                {
+                    "id": 5693,
+                    "name": "Revenue",
+                    "active": true
+                },
+                {
+                    "id": 5695,
+                    "name": "Product Revenue",
+                    "active": true
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 5196,
+                    "name": "Actuals",
+                    "active": true
+                }
+            ],
+            "Time": [
+                {
+                    "id": 5217,
+                    "name": "2019",
+                    "active": true
+                },
+                {
+                    "id": 5218,
+                    "name": "Q1",
+                    "active": true
+                },
+                {
+                    "id": 5219,
+                    "name": "January",
+                    "active": true
+                }
+            ],
+            "Department": [
+                {
+                    "id": 5194,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ],
+            "Product": [
+                {
+                    "id": 5420,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ],
+            "Region": [
+                {
+                    "id": 5692,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ]
+        }
+    },
+    {
+        "id": null,
+        "value": "3.00",
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 5192,
+                    "name": "Income Statement",
+                    "active": true
+                },
+                {
+                    "id": 5700,
+                    "name": "Gross Revenue",
+                    "active": true
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 5196,
+                    "name": "Actuals",
+                    "active": true
+                }
+            ],
+            "Time": [
+                {
+                    "id": 5217,
+                    "name": "2019",
+                    "active": true
+                },
+                {
+                    "id": 5218,
+                    "name": "Q1",
+                    "active": true
+                },
+                {
+                    "id": 5221,
+                    "name": "March",
+                    "active": true
+                }
+            ],
+            "Department": [
+                {
+                    "id": 5194,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ],
+            "Product": [
+                {
+                    "id": 5420,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ],
+            "Region": [
+                {
+                    "id": 5692,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ]
+        }
+    }
+]
 ```
 
-This endpoint retrieves a specific kitten.
+This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value whereas records with IDs are values explicitely stored in the cube.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+Data can be narrowed down to various slices by providing dimension paths for top level dimensions (Account, Scenario, etc). These slices can be specified in any of the following ways
 
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
+### Top Level Dimension Names With String Path Names
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+Account | Income Statement
+Department | Consolidated Only
+Time | 2019:Q1
+Scenario | Actuals
 
-## Delete a Specific Kitten
+### Top Level Dimension Names With IDs
 
-```ruby
-require 'kittn'
+Parameter | Description
+--------- | -----------
+Account | 5192
+Department | 5194
+Time | 5218
+Scenario | 5196
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
+### Top Level Dimension IDs With IDs
+
+Parameter | Description
+--------- | -----------
+12 | 5192
+43 | 5194
+54 | 5218
+56 | 5196
+
+### HTTP Request
+
+`GET https://dev.planwithcube.com/api/v1/cube`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+require_all | false | If set to true, a slice for each parent level dimension will be required.
+default_to_consolidated | false | If set to true, the any top level parent dimensions not provided will default to "Consolidated Only"
+rollup_rows | none | The result will rollup aggregates based on the name of this top level dimension (i.e. "Account").
+rollup_columns | none | The result will rollup aggregates based on the name of this top level dimension (i.e. "Time").
+
+## Update Data
 
 ```python
-import kittn
+import requests
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
+r = requests.post('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
 ```
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+> The above command expects to include JSON structured like this:
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+```json
+{
+    "message": "A message for this change",
+    "data": [
+        {
+            "Account": 432,
+            "Department": 5345,
+            "Scenario": 345,
+            "Time": 455,
+            "value": 30000,
+        },
+        {
+            "id": "01cceb66acf402166515da14d64c7f7e",
+            "value": 30000,
+        }
+    ]
+}
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
+[
+    {
+        "id": "01cceb66acf402166515da14d64c7f7e",
+        "value": "30000"
+    }
+]
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint can be used to update data in the OLAP cube. The `message` will be used in the changelog for any changes to data. The keys for each record in `data` are expected to be top level dimension names or IDs (similar to [retrieving data slices](#get-data-slices)). The value for each key should be the name or ID of a deepest level dimension belonging to that parent dimension. Inside of each `data` record should also be a `value` key with the actual value of that data in the cube.
+
+If you know the ID of the particular value in the cube you want to update, you can also use that instead in the `data` records.
+
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+`POST https://dev.planwithcube.com/api/v1/cube/update`
