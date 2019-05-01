@@ -437,9 +437,9 @@ r.json()
 ]
 ```
 
-This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value whereas records with IDs are values explicitely stored in the cube.
+This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value (i.e. rollups) whereas records with IDs are values explicitly stored in the cube.
 
-Data can be narrowed down to various slices by providing dimension paths for top level dimensions (Account, Scenario, etc). These slices can be specified in any of the following ways
+Data can be narrowed down to various slices by providing dimension paths for top level dimensions (Account, Scenario, etc). These slices can be specified in any of the following ways:
 
 ### Top Level Dimension Names With String Path Names
 
@@ -457,6 +457,16 @@ Parameter | Description
 Account | 5192
 Department | 5194
 Time | 5218
+Scenario | 5196
+
+### Top Level Dimension Names With Numerous IDs
+In this instance, ID 312 might be year 2018 and ID 456 might be year 2019 if you want to avoid loading 2020, etc.
+
+Parameter | Description
+--------- | -----------
+Account | 5192
+Department | 5194
+Time | 312&#124;456
 Scenario | 5196
 
 ### Top Level Dimension IDs With IDs
