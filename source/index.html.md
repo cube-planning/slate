@@ -25,6 +25,8 @@ The API expects the access token to be included in all API requests to the serve
 
 `Authorization: example-access-token`
 
+If a user belongs to more than one company, an `X-Company-ID` header can be passed specifying the company ID context to use for that particular API call.
+
 ## Get Access Token
 
 ```python
@@ -41,11 +43,16 @@ r.json()
 
 ```json
 {
-    "access_token": "example-access-token"
+    "access_token": "example-access-token",
+    "company": {
+        "id": "6a42ac12-ea84-490b-85b9-e80eaf5a72de",
+        "created_at": "2019-06-23T16:32:38.249315+00:00",
+        "name": "Example Company"
+    },
 }
 ```
 
-This endpoint retrieves an access token for a user at a company.
+This endpoint retrieves an access token for a user at a company. It also provides some information about the company the access token was authenticated against for the given user.
 
 Parameter | Description
 --------- | -----------
@@ -56,108 +63,47 @@ password | The password for the user
 
 `POST https://dev.planwithcube.com/api/v1/access_token`
 
+# Companies
+
+A user in Cube belongs to one or more companies. Companies are how various teams of employees manage their data (dimensions, etc) and permissions (users, etc).
+
+## Get User's Companies
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "created_at": "2019-06-23T16:32:38.249315+00:00",
+        "id": "6a42ac12-ea84-490b-85b9-e80eaf5a72de",
+        "name": "Example Company One"
+    },
+    {
+        "created_at": "2019-06-23T16:32:30.599032+00:00",
+        "id": "8e2dffb6-30cf-46eb-b2f8-5030a9aebf01",
+        "name": "Example Company Two"
+    }
+]
+```
+
+This endpoint retrieves all the companies a user has access to.
+
+### HTTP Request
+
+`GET https://dev.planwithcube.com/api/v1/user/companies`
+
 # Dimensions
 
 Dimensions store the chart of accounts for a company and outline how their data is structured. All companies have top level dimensions called Account, Scenario, Department, and Time. They also can have custom dimensions.
-
-## Get All Dimensions
-
-```python
-import requests
-
-r = requests.get('<url>', headers={
-    'Authorization': 'example-access-token'
-})
-r.json()
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-    {
-        "id": 5190,
-        "name": "Account",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-12T12:26:28.896518+00:00"
-    },
-    {
-        "id": 5191,
-        "name": "Balance Sheet",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-12T12:26:28.915209+00:00"
-    },
-    {
-        "id": 5192,
-        "name": "Income Statement",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-12T12:26:28.927012+00:00"
-    }
-]
-```
-
-This endpoint retrieves all dimensions for a company.
-
-### HTTP Request
-
-`GET https://dev.planwithcube.com/api/v1/dimensions`
-
-## Get Deepest Dimensions
-
-```python
-import requests
-
-r = requests.get('<url>', headers={
-    'Authorization': 'example-access-token'
-})
-r.json()
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-    {
-        "id": 5421,
-        "name": "Sales and Marketing",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-13T17:07:26.513460+00:00",
-        "children": []
-    },
-    {
-        "id": 5422,
-        "name": "Sports",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-13T17:07:31.190547+00:00",
-        "children": []
-    },
-    {
-        "id": 5196,
-        "name": "Actuals",
-        "active": true,
-        "source": null,
-        "formula": null,
-        "created_at": "2019-03-12T12:26:28.966437+00:00",
-        "children": []
-    }
-]
-```
-
-This endpoint retrieves all the deepest level dimensions for a company.
-
-### HTTP Request
-
-`GET https://dev.planwithcube.com/api/v1/dimensions/deepest`
 
 ## Get Dimensions Tree
 
@@ -283,6 +229,57 @@ This endpoint retrieves a companies dimensions structured in their hierarchy.
 Parameter | Default | Description
 --------- | ------- | -----------
 inactive | false | If set to true, the result will also include inactive dimensions.
+
+## Get Deepest Dimensions
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": 5421,
+        "name": "Sales and Marketing",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-13T17:07:26.513460+00:00",
+        "children": []
+    },
+    {
+        "id": 5422,
+        "name": "Sports",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-13T17:07:31.190547+00:00",
+        "children": []
+    },
+    {
+        "id": 5196,
+        "name": "Actuals",
+        "active": true,
+        "source": null,
+        "formula": null,
+        "created_at": "2019-03-12T12:26:28.966437+00:00",
+        "children": []
+    }
+]
+```
+
+This endpoint retrieves all the deepest level dimensions for a company.
+
+### HTTP Request
+
+`GET https://dev.planwithcube.com/api/v1/dimensions/deepest`
 
 # OLAP Cube Data
 
@@ -514,10 +511,6 @@ r.json()
             "Scenario": 345,
             "Time": 455,
             "value": 30000,
-        },
-        {
-            "id": "01cceb66acf402166515da14d64c7f7e",
-            "value": 30000,
         }
     ]
 }
@@ -535,9 +528,6 @@ r.json()
 ```
 
 This endpoint can be used to update data in the OLAP cube. The `message` will be used in the changelog for any changes to data. The keys for each record in `data` are expected to be top level dimension names or IDs (similar to [retrieving data slices](#get-data-slices)). The value for each key should be the name or ID of a deepest level dimension belonging to that parent dimension. Inside of each `data` record should also be a `value` key with the actual value of that data in the cube.
-
-If you know the ID of the particular value in the cube you want to update, you can also use that instead in the `data` records.
-
 
 ### HTTP Request
 
