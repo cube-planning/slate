@@ -61,7 +61,7 @@ password | The password for the user
 
 ### HTTP Request
 
-`POST https://dev.planwithcube.com/api/v1/access_token`
+`POST https://portal.cubesoftware.com/api/v1/access_token`
 
 # Companies
 
@@ -99,7 +99,7 @@ This endpoint retrieves all the companies a user has access to.
 
 ### HTTP Request
 
-`GET https://dev.planwithcube.com/api/v1/user/companies`
+`GET https://portal.cubesoftware.com/api/v1/user/companies`
 
 # Dimensions
 
@@ -222,7 +222,7 @@ This endpoint retrieves a companies dimensions structured in their hierarchy.
 
 ### HTTP Request
 
-`GET https://dev.planwithcube.com/api/v1/dimensions/tree`
+`GET https://portal.cubesoftware.com/api/v1/dimensions/tree`
 
 ### Query Parameters
 
@@ -279,7 +279,7 @@ This endpoint retrieves all the deepest level dimensions for a company.
 
 ### HTTP Request
 
-`GET https://dev.planwithcube.com/api/v1/dimensions/deepest`
+`GET https://portal.cubesoftware.com/api/v1/dimensions/deepest`
 
 # OLAP Cube Data
 
@@ -477,7 +477,7 @@ Parameter | Description
 
 ### HTTP Request
 
-`GET https://dev.planwithcube.com/api/v1/cube`
+`GET https://portal.cubesoftware.com/api/v1/cube`
 
 ### Query Parameters
 
@@ -531,4 +531,4 @@ This endpoint can be used to update data in the OLAP cube. The `message` will be
 
 ### HTTP Request
 
-`POST https://dev.planwithcube.com/api/v1/cube/update`
+`POST https://portal.cubesoftware.com/api/v1/cube/update`
