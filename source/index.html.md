@@ -482,7 +482,7 @@ This endpoint retrieves values stored in the OLAP cube for a given company. Any 
 
 Data can be narrowed down to various slices by providing dimension paths for top level dimensions (Account, Scenario, etc). These slices can be specified in any of the following ways:
 
-### Top Level Dimension Names With String Path Names
+### Top Level Dimension Names With String Path Names Example
 
 Parameter | Description
 --------- | -----------
@@ -491,7 +491,7 @@ Department | Consolidated Only
 Time | 2019:Q1
 Scenario | Actuals
 
-### Top Level Dimension Names With IDs
+### Top Level Dimension Names With IDs Example
 
 Parameter | Description
 --------- | -----------
@@ -500,7 +500,7 @@ Department | 5194
 Time | 5218
 Scenario | 5196
 
-### Top Level Dimension Names With Numerous IDs
+### Top Level Dimension Names With Numerous IDs Example
 In this instance, ID 312 might be year 2018 and ID 456 might be year 2019 if you want to avoid loading 2020, etc.
 
 Parameter | Description
@@ -510,7 +510,7 @@ Department | 5194
 Time | 312&#124;456
 Scenario | 5196
 
-### Top Level Dimension IDs With IDs
+### Top Level Dimension IDs With IDs Example
 
 Parameter | Description
 --------- | -----------
@@ -737,3 +737,59 @@ This endpoint can be used to update data in the OLAP cube. The `message` will be
 ### HTTP Request
 
 `POST https://portal.cubesoftware.com/api/v1/cube/update`
+
+## Drill Down Into A Value
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+    "id": "d9b44dbe-4636-412b-84cb-407d1fa3987b",
+    "value": "4.00",
+    "formula": null,
+    "calculated": false,
+    "attributes": {},
+    "splits": [
+        {
+            "value": "2.00",
+            "attributes": {
+                "Vendor": "Soup Co",
+                "Reimburseable": "True"
+            }
+        },
+        {
+            "value": "2.00",
+            "attributes": {
+                "Vendor": "Coffee Co",
+                "Reimburseable": "False"
+            }
+        }
+    ]
+}
+```
+
+This endpoint retrieves detailed information about a specific value in the cube. This information includes any attributes that are associated with this data as well as any splits that make up the overall value stored in the cube.
+
+Retrieving single cube value data is very similar to [retrieving data by slices](#get-data-by-slice) in that you are able to pass either the names of the dimensions or their IDs as parameters. However, a dimension value must be provided for each top level dimension and those values must be for deepest level dimensions (since data lives at the cross section of deepest level dimensions).
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/cube/value`
+
+### Top Level Dimension Names With String Path Names Example
+
+Parameter | Description
+--------- | -----------
+Account | Income Statement:Revenue:Product Revenue
+Department | Consolidated Only
+Time | 2019:Q1:Jan-19
+Scenario | Actuals
