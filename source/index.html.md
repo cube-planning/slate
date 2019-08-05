@@ -285,7 +285,7 @@ This endpoint retrieves all the deepest level dimensions for a company.
 
 The data stored in the OLAP cube for a company, organized by its dimensions.
 
-## Get Data Slices
+## Get Data By Slice
 
 ```python
 import requests
@@ -434,7 +434,7 @@ r.json()
 ]
 ```
 
-This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value (i.e. rollups) whereas records with IDs are values explicitly stored in the cube.
+This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value (i.e. rollups) whereas records with IDs are values explicitly stored in the cube. It is most useful when only one dimension exists in the rows of the data and one dimension exists in the columns of the data.
 
 Data can be narrowed down to various slices by providing dimension paths for top level dimensions (Account, Scenario, etc). These slices can be specified in any of the following ways:
 
@@ -487,6 +487,167 @@ require_all | false | If set to true, a slice for each parent level dimension wi
 default_to_consolidated | false | If set to true, the any top level parent dimensions not provided will default to "Consolidated Only"
 rollup_rows | none | The result will rollup aggregates based on the name of this top level dimension (i.e. "Account").
 rollup_columns | none | The result will rollup aggregates based on the name of this top level dimension (i.e. "Time").
+
+## Get Data By Rows / Columns
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command expects to include JSON structured like this:
+
+```json
+{
+    "filters": {
+        "Department": "Consolidated Only"
+    },
+    "rows": [
+        [
+            "Revenue",
+            "COGS"
+        ]
+    ],
+    "columns": [
+        [
+            "Budget",
+            "Actuals",
+            "Budget",
+            "Actuals"
+        ],
+        [
+            "Jan-19",
+            "Jan-19",
+            "Feb-19",
+            "Feb-19"
+        ]
+    ]
+}
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": "07c991586dfd4593add48225d06352b6",
+        "value": "1.00",
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 5192,
+                    "name": "Income Statement",
+                    "active": true
+                },
+                {
+                    "id": 5693,
+                    "name": "Revenue",
+                    "active": true
+                },
+                {
+                    "id": 5695,
+                    "name": "Product Revenue",
+                    "active": true
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 5196,
+                    "name": "Actuals",
+                    "active": true
+                }
+            ],
+            "Time": [
+                {
+                    "id": 5217,
+                    "name": "2019",
+                    "active": true
+                },
+                {
+                    "id": 5218,
+                    "name": "Q1",
+                    "active": true
+                },
+                {
+                    "id": 5219,
+                    "name": "January",
+                    "active": true
+                }
+            ],
+            "Department": [
+                {
+                    "id": 5194,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ]
+        }
+    },
+    {
+        "id": null,
+        "value": "3.00",
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 5192,
+                    "name": "Income Statement",
+                    "active": true
+                },
+                {
+                    "id": 5700,
+                    "name": "Gross Revenue",
+                    "active": true
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 5196,
+                    "name": "Actuals",
+                    "active": true
+                }
+            ],
+            "Time": [
+                {
+                    "id": 5217,
+                    "name": "2019",
+                    "active": true
+                },
+                {
+                    "id": 5218,
+                    "name": "Q1",
+                    "active": true
+                },
+                {
+                    "id": 5221,
+                    "name": "March",
+                    "active": true
+                }
+            ],
+            "Department": [
+                {
+                    "id": 5194,
+                    "name": "Consolidated Only",
+                    "active": true
+                }
+            ]
+        }
+    }
+]
+```
+
+This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value (i.e. rollups) whereas records with IDs are values explicitly stored in the cube.
+
+This endpoint is useful when creating reports out of data in the cube. Like a pivot table, you are able to specify which dimensions are in your rows / columns for the report, and the API will figure out the appropriate data to pull. In the example on the right, the "Account" dimension is provided as rows with "Scenario" and "Time" being provided as columns. Therefore, the "Department" dimension must be provided as a filter.
+
+Like [retrieving data by slices](#get-data-by-slice), you are able to pass either the names of the dimensions or their IDs as parameters.
+
+### HTTP Request
+
+`POST https://portal.cubesoftware.com/api/v1/cube/pivot`
 
 ## Update Data
 
