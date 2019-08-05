@@ -101,6 +101,50 @@ This endpoint retrieves all the companies a user has access to.
 
 `GET https://portal.cubesoftware.com/api/v1/user/companies`
 
+# Attributes
+
+Attributes in Cube are additional metadata that can be applied to values in the cube.
+
+## Get Company's Attributes
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": 1,
+        "table": {
+            "id": 1,
+            "created_at": "2019-07-29T12:47:58.441019+00:00",
+            "name": "Travel and Entertainment"
+        },
+        "created_at": "2019-07-01T15:10:43.002851+00:00",
+        "name": "Vendor"
+    }
+]
+```
+
+This endpoint retrieves all the attributes of a company.
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/attributes`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+table | none | The ID of an attribute table to limit results to
+
 # Dimensions
 
 Dimensions store the chart of accounts for a company and outline how their data is structured. All companies have top level dimensions called Account, Scenario, Department, and Time. They also can have custom dimensions.
