@@ -262,7 +262,7 @@ r.json()
 ]
 ```
 
-This endpoint retrieves a companies dimensions structured in their hierarchy.
+This endpoint retrieves a company's dimensions structured in their hierarchy.
 
 ### HTTP Request
 
@@ -793,3 +793,369 @@ Account | Income Statement:Revenue:Product Revenue
 Department | Consolidated Only
 Time | 2019:Q1:Jan-19
 Scenario | Actuals
+
+
+# Report Templates
+
+User configuration of sheets ranges, with their corresponding rows, columns, and filters.
+
+For development purposes, a Report is a given range on a user's sheet, with row/column/filter data. A Report Template is a collection of Reports on a given sheet (aka multiple ranges on a single sheet).
+
+
+## Retrieve Report Templates
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above request returns a JSON structured like this:
+
+```json
+[
+    {
+        "modified_at": "2019-09-24T17:28:56.739624+00:00",
+        "created_by": { "id": "1" },
+        "id": "5",
+        "created_at": "2019-09-24T17:28:56.739514+00:00",
+        "name": "Template #2",
+        "reports": [
+            {
+                "id": "16",
+                "sheet_range": "B1:C5",
+                "rows": {
+                    //Top-level dimension id: [Row dimenion IDs]
+                    "10": [ "30", "31", "32", "29", "Can Also Be Text" ]
+                },
+                "columns": {
+                    "6": [ "9", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ],
+                    "1": [ "65" ]
+                },
+                "values": [
+                    [ "1","3" ],
+                    [ "20", "50" ],
+                    [ "100", "110" ],
+                    [ "10", "20" ],
+                    [ "22", "34" ]
+                ]
+            },
+            {
+                "id": "17",
+                "sheet_range": "B7:E10",
+                "rows": {
+                    "1": [ "65", "66", "67", "68" ]
+                },
+                "columns": {
+                    "10": [ "29", "29", "33", "33" ],
+                    "6": [ "7", "8", "7", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ]
+                },
+                "values": [
+                    [ "12", "34", "99", "54" ],
+                    [ "99", "43", "76", "65" ],
+                    [ "12", "13", "23", "54" ],
+                    [ "65", "56", "34", "32" ]
+                ]
+            }
+        ]
+    },
+    {
+        "modified_at": "2019-09-24T17:46:17.086755+00:00",
+        "created_by": {
+            "id": "1"
+        },
+        "id": "7",
+        "created_at": "2019-09-24T17:46:17.086632+00:00",
+        "name": "Yet Another",
+        "reports": [
+            {
+                "id": "20",
+                "sheet_range": "B1:C5",
+                "rows": {
+                    "10": [ "30", "31", "32", "29", "RANDOM TITLE" ]
+                },
+                "columns": {
+                    "6": [ "9", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ],
+                    "1": [ "65" ]
+                },
+                "values": [
+                    [ "1", "3" ],
+                    [ "20", "50" ],
+                    [ "100", "110" ],
+                    [ "10", "20" ],
+                    [ "22", "34" ]
+                ]
+            },
+            {
+                "id": "21",
+                "sheet_range": "B7:E10",
+                "rows": {
+                    "1": [ "65", "66", "67", "68" ]
+                },
+                "columns": {
+                    "10": [ "29", "29", "33", "33" ],
+                    "6": [ "7", "8", "7", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ]
+                },
+                "values": [
+                    [ "12", "34", "99", "54" ],
+                    [ "99", "43", "76", "65" ],
+                    [ "12", "13", "23", "54" ],
+                    [ "65", "56", "34", "32" ]
+                ]
+            }
+        ]
+    }
+]
+```
+
+This endpoint fetches all the Report Templates available to the currently authenticated user. This includes all Report Templates anyone at the user's company has created.
+
+Report Templates are made up of one or many reports, each with a defined `sheet_range` where the report should be placed on the sheet.
+
+For rows, columns, and filters in a report, the response is a dictionary in the format `{top level dimension id: [list of individual rows/columns]}`
+
+The individual rows/columns may be IDs of Dimensions in Cube, or they may be user-inputted strings (e.g. section headings, spacing columns/rows)
+
+The `values` key in the report is a snapshot of the values in the report the last time the user saved it. It is NOT current data from the Cube.
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/templates`
+
+
+## Create Report Template
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above request includes a `data` JSON file structured like this:
+
+```json
+{
+	"name": "A New Template",
+	"reports": [
+		{
+			"range": "B1:C5",
+			"rows": {
+				"Time": ["Jan-19", "Feb-19", "Mar-19", "Q1-19"]
+			},
+			"columns": {
+				"Scenario": ["Forecast", "Budget"]
+			},
+			"filters": {
+				"Department": ["Consolidated Only"],
+				"Account": "Revenue"
+			},
+			"values": [
+				["1", "3"],
+				["20", "50"],
+				["100", "110"],
+				["10", "20"],
+				["22", "34"]
+			]
+		},
+		{
+			"range": "B7:E10",
+			"rows": {
+				"Account": ["Revenue", "COGS", "Raw COGS", "Gross Margin"]
+			},
+			"columns": {
+				"Time": ["Q1-19", "Q1-19", "Q2-19", "Q2-19"],
+				"Scenario": ["Actuals", "Budget", "Actuals", "Budget"]
+			},
+			"filters": {
+				"Department": "Consolidated Only"
+			},
+			"values": [
+				["12", "34", "99", "54"],
+				["99", "43", "76", "65"],
+				["12", "13", "23", "54"],
+				["65", "56", "34", "32"]
+			]
+		}
+	]
+}
+```
+> And returns a JSON with the same data as hitting the endpoint via GET, including the newly created Report Template
+> See [Retrieve Report Templates](#retrieve-report-templates)
+
+This endpoint allows the creation of new Report Templates in the database.
+
+You can send row, column, and filters as dimension names or IDs. The API will convert dimension names into IDs. Row/column name strings that do not match the name of a dimension are saved to preserve user-inputted data (e.g. sheet subheadings, spacing rows)
+
+Filters must only have one value. However, you can send that value as `{'top-level': 'value'}` or `{'top-level': ['value']}`. They are equivalent.
+
+
+### HTTP Request
+
+`POST https://portal.cubesoftware.com/api/v1/templates`
+
+
+## Retrieve One Report Template
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> Response is a JSON object like this:
+
+```json
+{
+    "modified_at": "2019-09-25T13:37:48.826114+00:00",
+    "created_by": {
+        "id": "1"
+    },
+    "id": "11",
+    "created_at": "2019-09-25T13:37:48.826007+00:00",
+    "name": "Retrieved Template",
+    "reports": [
+        {
+            "id": "26",
+            "sheet_range": "B1:C5",
+            "rows": {
+                "10": [ "30", "31", "32", "29" ]
+            },
+            "columns": {
+                "6": [ "9", "8" ]
+            },
+            "filters": {
+                "4": [ "5" ],
+                "1": [ "65" ]
+            },
+            "values": [
+                [ "1", "3" ],
+                [ "20", "50" ],
+                [ "100", "110" ],
+                [ "10", "20" ],
+                [ "22", "34" ]
+            ]
+        },
+        {
+            "id": "27",
+            "sheet_range": "B7:E10",
+            "rows": {
+                "1": [ "65", "66", "67", "68" ]
+            },
+            "columns": {
+                "10": [ "29", "29", "33", "33" ],
+                "6": [ "7", "8", "7", "8" ]
+            },
+            "filters": {
+                "4": [ "5" ]
+            },
+            "values": [
+                [ "12", "34", "99", "54" ],
+                [ "99", "43", "76", "65" ],
+                [ "12", "13", "23", "54" ],
+                [ "65", "56", "34", "32" ]
+            ]
+        }
+    ]
+}
+```
+
+This endpoint works much like [Retrieve Report Templates](#retrieve-report-templates), but it only fetches one template, given an ID specified in the URL.
+
+See [Retrieve Report Templates](#retrieve-report-templates) for more information on format and expected values.
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/templates/<id>`
+
+
+## Update Existing Report Template
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': 'example-access-token'
+})
+# alternatively, you can use requests.put() - equivalent
+r.json()
+```
+
+> Request also requires a `data` JSON object that looks like this:
+
+```json
+{
+	"name": "Update My Template",
+	"reports": [
+		{
+			"range": "B1:C5",
+			"rows": {
+				"Time": ["Apr-19", "May-19", "Jun-19", "Q2-19"]
+			},
+			"columns": {
+				"Scenario": ["Forecast", "Budget"]
+			},
+			"filters": {
+				"Department": ["Consolidated Only"],
+				"Account": "Revenue"
+			},
+			"values": [
+				["1", "3"],
+				["20", "50"],
+				["100", "110"],
+				["10", "20"],
+				["22", "34"]
+			]
+		},
+		{
+			"range": "B7:E10",
+			"rows": {
+				"Account": ["Revenue", "COGS", "Raw COGS", "Gross Margin"]
+			},
+			"columns": {
+				"Time": ["Q1-19", "Q1-19", "Q2-19", "Q2-19"],
+				"Scenario": ["Actuals", "Budget", "Actuals", "Budget"]
+			},
+			"filters": {
+				"Department": "Consolidated Only"
+			},
+			"values": [
+				["12", "34", "99", "54"],
+				["99", "43", "76", "65"],
+				["12", "13", "23", "54"],
+				["65", "56", "34", "32"]
+			]
+		}
+	]
+}
+```
+> And returns a JSON with the same data as hitting the endpoint via GET, including the newly updated Report Template data
+> See [Retrieve One Report Template](#retrieve-one-report-template)
+
+This endpoint allows you to update a specific Report Template. It uses much of the same logic as [Create Report Template](#create-report-template), but it updates an existing template rather than creating a new one.
+
+See [Create Report Template](#create-report-template) for details on format and expected values.
+
+### HTTP Request
+
+`POST` or `PUT https://portal.cubesoftware.com/api/v1/templates/<id>` - equivalent
