@@ -262,7 +262,7 @@ r.json()
 ]
 ```
 
-This endpoint retrieves a companies dimensions structured in their hierarchy.
+This endpoint retrieves a company's dimensions structured in their hierarchy.
 
 ### HTTP Request
 
@@ -793,3 +793,285 @@ Account | Income Statement:Revenue:Product Revenue
 Department | Consolidated Only
 Time | 2019:Q1:Jan-19
 Scenario | Actuals
+
+
+# Report Templates
+
+User configuration of sheets ranges, with their corresponding rows, columns, and filters.
+
+For development purposes, a Report is a given range on a user's sheet, with row/column/filter data. A Report Template is a collection of Reports on a given sheet (aka multiple ranges on a single sheet).
+
+
+## Retrieve Report Templates
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above request returns a JSON structured like this:
+
+```json
+[
+    {
+        "created_at": "2019-09-25T18:49:53.260147+00:00",
+        "id": "8",
+        "name": "My Template",
+        "modified_at": "2019-09-25T18:53:01.163997+00:00",
+        "reports": [
+            {
+                "id": 34,
+                "sheet_range": "B1:D4",
+                "rows": {
+                    "10": [ "34", "35", "36", "33" ]
+                },
+                "columns": {
+                    "6": [ "7", "9", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ],
+                    "1": [ "65" ]
+                }
+            },
+            {
+                "id": 35,
+                "sheet_range": "B7:E10",
+                "rows": {
+                    "1": [ "65", "66", "67", "68" ]
+                },
+                "columns": {
+                    "10": [ "29", "29", "33", "33" ],
+                    "6": [ "7", "8", "7", "8" ]
+                },
+                "filters": {
+                    "4": [ "5" ]
+                }
+            }
+        ]
+    }
+]
+```
+
+This endpoint fetches an array of all the Report Templates available to the currently authenticated user. This includes all Report Templates anyone at the user's company has created.
+
+Report Templates may be made up of one or many reports.
+
+### Report Template Response Format
+
+Item | Type | Explanation
+-----|------|------------
+id | string | The unique primary key for this Report Template
+name | string | User-specified name for the Report Template, unique for the authenticated user
+created_at | string | When this Report Template was first created
+modified_at | string | When this Report Template was last modified
+reports | array | All the Reports in this Report Template see [Report Response Format](#report-response-format)
+
+### Report Response Format
+
+Item | Type | Explanation
+-----|------|------------
+id | string | The unique primary key for this Report
+sheet_range | string | The cell range for placing this report on a spreadsheet (e.g. "A1:D5")
+rows | dictionary | Format: `{top level dimension id: [list of individual row dimensions]}`
+columns | dictionary | Format: `{top level dimension id: [list of individual column dimensions]}`
+filters | dictionary | Format: `{top level dimension id: [one filter dimension]}`
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/templates`
+
+
+## Create Report Template
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above request requires a `data` JSON file structured like this:
+
+```json
+{
+   "name":"New Template",
+   "reports":[
+      {
+         "range":"B1:E4",
+         "rows":{
+            "Scenario":[
+               "Actuals",
+               "Forecast",
+               "Budget",
+               "User-created String"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Jan-19",
+               "Feb-19",
+               "Mar-19",
+               "Q1-19"
+            ]
+         },
+         "filters":{
+            "Department":[
+               "Consolidated Only"
+            ],
+            "Account":"Revenue"
+         }
+      },
+      {
+         "range":"B7:E10",
+         "rows":{
+            "Account":[
+               "Revenue",
+               "COGS",
+               "Raw COGS",
+               "Gross Margin"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Q1-19",
+               "Q1-19",
+               "Q2-19",
+               "Q2-19"
+            ],
+            "Scenario":[
+               "Actuals",
+               "Budget",
+               "Actuals",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":"Consolidated Only"
+         }
+      }
+   ]
+}
+```
+
+This endpoint allows the creation of new Report Templates in the database.
+
+You can send row, column, and filters as dimension names or IDs. The API will convert dimension names into IDs. Row/column name strings that do not match the name of a dimension are saved to preserve user-inputted data (e.g. sheet subheadings, spacing rows)
+
+Filters must only have one value. However, you can send that value as `{'top-level': 'value'}` or `{'top-level': ['value']}`. They are equivalent.
+
+The request and response JSONs follow the same format and all fields are required. See [Retrieve Report
+Templates](#retrieve-report-templates) for more information on JSON format and expected values.
+
+### HTTP Request
+
+`POST https://portal.cubesoftware.com/api/v1/templates`
+
+
+## Retrieve One Report Template
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+This endpoint works much like [Retrieve Report Templates](#retrieve-report-templates), but it only fetches one template, given an ID specified in the URL.
+
+See [Retrieve Report Templates](#retrieve-report-templates) for more information on response format and expected values.
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/templates/<id>`
+
+
+## Update Report Template
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': 'example-access-token'
+})
+# alternatively, you can use requests.put() - equivalent
+r.json()
+```
+
+> Request also requires a `data` JSON object that looks like this:
+
+```json
+{
+   "name":"Update My Template",
+   "reports":[
+      {
+         "range":"B1:C5",
+         "rows":{
+            "Time":[
+               "Apr-19",
+               "May-19",
+               "Jun-19",
+               "Q2-19"
+            ]
+         },
+         "columns":{
+            "Scenario":[
+               "Forecast",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":[
+               "Consolidated Only"
+            ],
+            "Account":"Revenue"
+         }
+      },
+      {
+         "range":"B7:E10",
+         "rows":{
+            "Account":[
+               "Revenue",
+               "COGS",
+               "Raw COGS",
+               "Gross Margin"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Q1-19",
+               "Q1-19",
+               "Q2-19",
+               "Q2-19"
+            ],
+            "Scenario":[
+               "Actuals",
+               "Budget",
+               "Actuals",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":"Consolidated Only"
+         }
+      }
+   ]
+}
+```
+> And returns a JSON with the same data as hitting the endpoint via GET, including the newly updated Report Template data
+> See [Retrieve One Report Template](#retrieve-one-report-template)
+
+This endpoint allows you to update a specific Report Template. It uses much of the same logic as [Create Report Template](#create-report-template), but it updates an existing template rather than creating a new one.
+
+See [Create Report Template](#create-report-template) for details on format and expected values.
+
+### HTTP Request
+
+`POST/PUT https://portal.cubesoftware.com/api/v1/templates/<id>`
