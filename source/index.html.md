@@ -818,36 +818,27 @@ r.json()
 ```json
 [
     {
-        "modified_at": "2019-09-24T17:28:56.739624+00:00",
-        "created_by": { "id": "1" },
-        "id": "5",
-        "created_at": "2019-09-24T17:28:56.739514+00:00",
-        "name": "Template #2",
+        "created_at": "2019-09-25T18:49:53.260147+00:00",
+        "id": "8",
+        "name": "My Template",
+        "modified_at": "2019-09-25T18:53:01.163997+00:00",
         "reports": [
             {
-                "id": "16",
-                "sheet_range": "B1:C5",
+                "id": 34,
+                "sheet_range": "B1:D4",
                 "rows": {
-                    //Top-level dimension id: [Row dimenion IDs]
-                    "10": [ "30", "31", "32", "29", "Can Also Be Text" ]
+                    "10": [ "34", "35", "36", "33" ]
                 },
                 "columns": {
-                    "6": [ "9", "8" ]
+                    "6": [ "7", "9", "8" ]
                 },
                 "filters": {
                     "4": [ "5" ],
                     "1": [ "65" ]
-                },
-                "values": [
-                    [ "1","3" ],
-                    [ "20", "50" ],
-                    [ "100", "110" ],
-                    [ "10", "20" ],
-                    [ "22", "34" ]
-                ]
+                }
             },
             {
-                "id": "17",
+                "id": 35,
                 "sheet_range": "B7:E10",
                 "rows": {
                     "1": [ "65", "66", "67", "68" ]
@@ -858,80 +849,36 @@ r.json()
                 },
                 "filters": {
                     "4": [ "5" ]
-                },
-                "values": [
-                    [ "12", "34", "99", "54" ],
-                    [ "99", "43", "76", "65" ],
-                    [ "12", "13", "23", "54" ],
-                    [ "65", "56", "34", "32" ]
-                ]
-            }
-        ]
-    },
-    {
-        "modified_at": "2019-09-24T17:46:17.086755+00:00",
-        "created_by": {
-            "id": "1"
-        },
-        "id": "7",
-        "created_at": "2019-09-24T17:46:17.086632+00:00",
-        "name": "Yet Another",
-        "reports": [
-            {
-                "id": "20",
-                "sheet_range": "B1:C5",
-                "rows": {
-                    "10": [ "30", "31", "32", "29", "RANDOM TITLE" ]
-                },
-                "columns": {
-                    "6": [ "9", "8" ]
-                },
-                "filters": {
-                    "4": [ "5" ],
-                    "1": [ "65" ]
-                },
-                "values": [
-                    [ "1", "3" ],
-                    [ "20", "50" ],
-                    [ "100", "110" ],
-                    [ "10", "20" ],
-                    [ "22", "34" ]
-                ]
-            },
-            {
-                "id": "21",
-                "sheet_range": "B7:E10",
-                "rows": {
-                    "1": [ "65", "66", "67", "68" ]
-                },
-                "columns": {
-                    "10": [ "29", "29", "33", "33" ],
-                    "6": [ "7", "8", "7", "8" ]
-                },
-                "filters": {
-                    "4": [ "5" ]
-                },
-                "values": [
-                    [ "12", "34", "99", "54" ],
-                    [ "99", "43", "76", "65" ],
-                    [ "12", "13", "23", "54" ],
-                    [ "65", "56", "34", "32" ]
-                ]
+                }
             }
         ]
     }
 ]
 ```
 
-This endpoint fetches all the Report Templates available to the currently authenticated user. This includes all Report Templates anyone at the user's company has created.
+This endpoint fetches an array of all the Report Templates available to the currently authenticated user. This includes all Report Templates anyone at the user's company has created.
 
-Report Templates are made up of one or many reports, each with a defined `sheet_range` where the report should be placed on the sheet.
+Report Templates may be made up of one or many reports.
 
-For rows, columns, and filters in a report, the response is a dictionary in the format `{top level dimension id: [list of individual rows/columns]}`
+### Report Template Response Format
 
-The individual rows/columns may be IDs of Dimensions in Cube, or they may be user-inputted strings (e.g. section headings, spacing columns/rows)
+Item | Type | Explanation
+-----|------|------------
+id | String (Integer) | The unique primary key for this Report Template
+name | String (VARCHAR) | User-specified name for the Report Template, unique for the authenticated user
+created_at | String (Timestamp) | When this Report Template was first created
+modified_at | String (Timestamp) | When thd Report Template was last modified
+reports | Array | All the Reports in this Report Template see [Report Response Format](#report-response-format)
 
-The `values` key in the report is a snapshot of the values in the report the last time the user saved it. It is NOT current data from the Cube.
+### Report Response Format
+
+Item | Type | Explanation
+-----|------|------------
+id | String (Integer) | The unique primary key for this Report
+sheet_range | String | The cell range for placing this report on a spreadsheet (e.g. "A1:D5")
+rows | Dictionary | Format: `{top level dimension id: [list of individual row dimensions]}`
+columns | Dictionary | Format: `{top level dimension id: [list of individual column dimensions]}`
+filters | Dictionary | Format: `{top level dimension id: [one filter dimension]}`
 
 ### HTTP Request
 
@@ -949,31 +896,24 @@ r = requests.post('<url>', data=data, headers={
 r.json()
 ```
 
-> The above request includes a `data` JSON file structured like this:
+> The above request requires a `data` JSON file structured like this:
 
 ```json
 {
-	"name": "A New Template",
+	"name": "New Template",
 	"reports": [
 		{
-			"range": "B1:C5",
+			"range": "B1:E4",
 			"rows": {
-				"Time": ["Jan-19", "Feb-19", "Mar-19", "Q1-19"]
+				"Scenario": ["Actuals", "Forecast", "Budget", "User-created String"]
 			},
 			"columns": {
-				"Scenario": ["Forecast", "Budget"]
+				"Time": ["Jan-19", "Feb-19", "Mar-19", "Q1-19"]
 			},
 			"filters": {
 				"Department": ["Consolidated Only"],
 				"Account": "Revenue"
-			},
-			"values": [
-				["1", "3"],
-				["20", "50"],
-				["100", "110"],
-				["10", "20"],
-				["22", "34"]
-			]
+			}
 		},
 		{
 			"range": "B7:E10",
@@ -986,19 +926,11 @@ r.json()
 			},
 			"filters": {
 				"Department": "Consolidated Only"
-			},
-			"values": [
-				["12", "34", "99", "54"],
-				["99", "43", "76", "65"],
-				["12", "13", "23", "54"],
-				["65", "56", "34", "32"]
-			]
+			}
 		}
 	]
 }
 ```
-> And returns a JSON with the same data as hitting the endpoint via GET, including the newly created Report Template
-> See [Retrieve Report Templates](#retrieve-report-templates)
 
 This endpoint allows the creation of new Report Templates in the database.
 
@@ -1006,6 +938,8 @@ You can send row, column, and filters as dimension names or IDs. The API will co
 
 Filters must only have one value. However, you can send that value as `{'top-level': 'value'}` or `{'top-level': ['value']}`. They are equivalent.
 
+The request and response JSONs follow the same format and all fields are required. See [Retrieve Report
+Templates](#retrieve-report-templates) for more information on JSON format and expected values.
 
 ### HTTP Request
 
@@ -1023,66 +957,9 @@ r = requests.get('<url>', headers={
 r.json()
 ```
 
-> Response is a JSON object like this:
-
-```json
-{
-    "modified_at": "2019-09-25T13:37:48.826114+00:00",
-    "created_by": {
-        "id": "1"
-    },
-    "id": "11",
-    "created_at": "2019-09-25T13:37:48.826007+00:00",
-    "name": "Retrieved Template",
-    "reports": [
-        {
-            "id": "26",
-            "sheet_range": "B1:C5",
-            "rows": {
-                "10": [ "30", "31", "32", "29" ]
-            },
-            "columns": {
-                "6": [ "9", "8" ]
-            },
-            "filters": {
-                "4": [ "5" ],
-                "1": [ "65" ]
-            },
-            "values": [
-                [ "1", "3" ],
-                [ "20", "50" ],
-                [ "100", "110" ],
-                [ "10", "20" ],
-                [ "22", "34" ]
-            ]
-        },
-        {
-            "id": "27",
-            "sheet_range": "B7:E10",
-            "rows": {
-                "1": [ "65", "66", "67", "68" ]
-            },
-            "columns": {
-                "10": [ "29", "29", "33", "33" ],
-                "6": [ "7", "8", "7", "8" ]
-            },
-            "filters": {
-                "4": [ "5" ]
-            },
-            "values": [
-                [ "12", "34", "99", "54" ],
-                [ "99", "43", "76", "65" ],
-                [ "12", "13", "23", "54" ],
-                [ "65", "56", "34", "32" ]
-            ]
-        }
-    ]
-}
-```
-
 This endpoint works much like [Retrieve Report Templates](#retrieve-report-templates), but it only fetches one template, given an ID specified in the URL.
 
-See [Retrieve Report Templates](#retrieve-report-templates) for more information on format and expected values.
+See [Retrieve Report Templates](#retrieve-report-templates) for more information on response format and expected values.
 
 ### HTTP Request
 
@@ -1118,14 +995,7 @@ r.json()
 			"filters": {
 				"Department": ["Consolidated Only"],
 				"Account": "Revenue"
-			},
-			"values": [
-				["1", "3"],
-				["20", "50"],
-				["100", "110"],
-				["10", "20"],
-				["22", "34"]
-			]
+			}
 		},
 		{
 			"range": "B7:E10",
@@ -1138,13 +1008,7 @@ r.json()
 			},
 			"filters": {
 				"Department": "Consolidated Only"
-			},
-			"values": [
-				["12", "34", "99", "54"],
-				["99", "43", "76", "65"],
-				["12", "13", "23", "54"],
-				["65", "56", "34", "32"]
-			]
+			}
 		}
 	]
 }
