@@ -819,7 +819,7 @@ r.json()
 [
     {
         "created_at": "2019-09-25T18:49:53.260147+00:00",
-        "id": "8",
+        "id": 8,
         "name": "My Template",
         "modified_at": "2019-09-25T18:53:01.163997+00:00",
         "reports": [
@@ -864,7 +864,7 @@ Report Templates may be made up of one or many reports.
 
 Item | Type | Explanation
 -----|------|------------
-id | String (Integer) | The unique primary key for this Report Template
+id | Integer | The unique primary key for this Report Template
 name | String (VARCHAR) | User-specified name for the Report Template, unique for the authenticated user
 created_at | String (Timestamp) | When this Report Template was first created
 modified_at | String (Timestamp) | When thd Report Template was last modified
@@ -874,7 +874,7 @@ reports | Array | All the Reports in this Report Template see [Report Response F
 
 Item | Type | Explanation
 -----|------|------------
-id | String (Integer) | The unique primary key for this Report
+id | Integer | The unique primary key for this Report
 sheet_range | String | The cell range for placing this report on a spreadsheet (e.g. "A1:D5")
 rows | Dictionary | Format: `{top level dimension id: [list of individual row dimensions]}`
 columns | Dictionary | Format: `{top level dimension id: [list of individual column dimensions]}`
