@@ -864,21 +864,21 @@ Report Templates may be made up of one or many reports.
 
 Item | Type | Explanation
 -----|------|------------
-id | Integer | The unique primary key for this Report Template
-name | String (VARCHAR) | User-specified name for the Report Template, unique for the authenticated user
-created_at | String (Timestamp) | When this Report Template was first created
-modified_at | String (Timestamp) | When thd Report Template was last modified
-reports | Array | All the Reports in this Report Template see [Report Response Format](#report-response-format)
+id | integer | The unique primary key for this Report Template
+name | string | User-specified name for the Report Template, unique for the authenticated user
+created_at | string | When this Report Template was first created
+modified_at | string | When this Report Template was last modified
+reports | array | All the Reports in this Report Template see [Report Response Format](#report-response-format)
 
 ### Report Response Format
 
 Item | Type | Explanation
 -----|------|------------
-id | Integer | The unique primary key for this Report
-sheet_range | String | The cell range for placing this report on a spreadsheet (e.g. "A1:D5")
-rows | Dictionary | Format: `{top level dimension id: [list of individual row dimensions]}`
-columns | Dictionary | Format: `{top level dimension id: [list of individual column dimensions]}`
-filters | Dictionary | Format: `{top level dimension id: [one filter dimension]}`
+id | integer | The unique primary key for this Report
+sheet_range | string | The cell range for placing this report on a spreadsheet (e.g. "A1:D5")
+rows | dictionary | Format: `{top level dimension id: [list of individual row dimensions]}`
+columns | dictionary | Format: `{top level dimension id: [list of individual column dimensions]}`
+filters | dictionary | Format: `{top level dimension id: [one filter dimension]}`
 
 ### HTTP Request
 
@@ -900,35 +900,62 @@ r.json()
 
 ```json
 {
-	"name": "New Template",
-	"reports": [
-		{
-			"range": "B1:E4",
-			"rows": {
-				"Scenario": ["Actuals", "Forecast", "Budget", "User-created String"]
-			},
-			"columns": {
-				"Time": ["Jan-19", "Feb-19", "Mar-19", "Q1-19"]
-			},
-			"filters": {
-				"Department": ["Consolidated Only"],
-				"Account": "Revenue"
-			}
-		},
-		{
-			"range": "B7:E10",
-			"rows": {
-				"Account": ["Revenue", "COGS", "Raw COGS", "Gross Margin"]
-			},
-			"columns": {
-				"Time": ["Q1-19", "Q1-19", "Q2-19", "Q2-19"],
-				"Scenario": ["Actuals", "Budget", "Actuals", "Budget"]
-			},
-			"filters": {
-				"Department": "Consolidated Only"
-			}
-		}
-	]
+   "name":"New Template",
+   "reports":[
+      {
+         "range":"B1:E4",
+         "rows":{
+            "Scenario":[
+               "Actuals",
+               "Forecast",
+               "Budget",
+               "User-created String"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Jan-19",
+               "Feb-19",
+               "Mar-19",
+               "Q1-19"
+            ]
+         },
+         "filters":{
+            "Department":[
+               "Consolidated Only"
+            ],
+            "Account":"Revenue"
+         }
+      },
+      {
+         "range":"B7:E10",
+         "rows":{
+            "Account":[
+               "Revenue",
+               "COGS",
+               "Raw COGS",
+               "Gross Margin"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Q1-19",
+               "Q1-19",
+               "Q2-19",
+               "Q2-19"
+            ],
+            "Scenario":[
+               "Actuals",
+               "Budget",
+               "Actuals",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":"Consolidated Only"
+         }
+      }
+   ]
 }
 ```
 
@@ -966,7 +993,7 @@ See [Retrieve Report Templates](#retrieve-report-templates) for more information
 `GET https://portal.cubesoftware.com/api/v1/templates/<id>`
 
 
-## Update Existing Report Template
+## Update Report Template
 
 ```python
 import requests
@@ -982,35 +1009,60 @@ r.json()
 
 ```json
 {
-	"name": "Update My Template",
-	"reports": [
-		{
-			"range": "B1:C5",
-			"rows": {
-				"Time": ["Apr-19", "May-19", "Jun-19", "Q2-19"]
-			},
-			"columns": {
-				"Scenario": ["Forecast", "Budget"]
-			},
-			"filters": {
-				"Department": ["Consolidated Only"],
-				"Account": "Revenue"
-			}
-		},
-		{
-			"range": "B7:E10",
-			"rows": {
-				"Account": ["Revenue", "COGS", "Raw COGS", "Gross Margin"]
-			},
-			"columns": {
-				"Time": ["Q1-19", "Q1-19", "Q2-19", "Q2-19"],
-				"Scenario": ["Actuals", "Budget", "Actuals", "Budget"]
-			},
-			"filters": {
-				"Department": "Consolidated Only"
-			}
-		}
-	]
+   "name":"Update My Template",
+   "reports":[
+      {
+         "range":"B1:C5",
+         "rows":{
+            "Time":[
+               "Apr-19",
+               "May-19",
+               "Jun-19",
+               "Q2-19"
+            ]
+         },
+         "columns":{
+            "Scenario":[
+               "Forecast",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":[
+               "Consolidated Only"
+            ],
+            "Account":"Revenue"
+         }
+      },
+      {
+         "range":"B7:E10",
+         "rows":{
+            "Account":[
+               "Revenue",
+               "COGS",
+               "Raw COGS",
+               "Gross Margin"
+            ]
+         },
+         "columns":{
+            "Time":[
+               "Q1-19",
+               "Q1-19",
+               "Q2-19",
+               "Q2-19"
+            ],
+            "Scenario":[
+               "Actuals",
+               "Budget",
+               "Actuals",
+               "Budget"
+            ]
+         },
+         "filters":{
+            "Department":"Consolidated Only"
+         }
+      }
+   ]
 }
 ```
 > And returns a JSON with the same data as hitting the endpoint via GET, including the newly updated Report Template data
@@ -1022,4 +1074,4 @@ See [Create Report Template](#create-report-template) for details on format and 
 
 ### HTTP Request
 
-`POST` or `PUT https://portal.cubesoftware.com/api/v1/templates/<id>` - equivalent
+`POST/PUT https://portal.cubesoftware.com/api/v1/templates/<id>`
