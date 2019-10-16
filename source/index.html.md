@@ -1075,3 +1075,60 @@ See [Create Report Template](#create-report-template) for details on format and 
 ### HTTP Request
 
 `POST/PUT https://portal.cubesoftware.com/api/v1/templates/<id>`
+
+# User Settings
+
+User settings contain various defaults tied to users.
+
+
+## Spreadsheet Settings
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above request returns a JSON structured like this:
+
+```json
+{
+    "dimensions": {
+        "filters": [
+            {
+                "top_level_id": 18000,
+                "selected_id": 20270
+            },
+            {
+                "top_level_id": 18003,
+                "selected_id": 18004
+            },
+            {
+                "top_level_id": 18005,
+                "selected_id": 18006
+            },
+            {
+                "top_level_id": 18009,
+                "selected_id": 18027
+            }
+        ]
+    }
+}
+```
+
+This endpoint fetches default values to use in various cases for the user in the context
+of a spreadsheet (i.e. inside of Cube add-ons).
+
+### Response Format
+
+Item | Type | Explanation
+-----|------|------------
+top_level_id | integer | The ID of the top level dimension the default is for
+selected_id | integer | The selected dimension (will be a child of the top level dimension)
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/user/settings/spreadsheets`
