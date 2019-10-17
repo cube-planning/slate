@@ -1119,8 +1119,7 @@ r.json()
 }
 ```
 
-This endpoint fetches default values to use in various cases for the user in the context
-of a spreadsheet (i.e. inside of Cube add-ons).
+This endpoint returns reasonable defaults when the user hasn't specified dimensions to use for rows, columns, filters inside of a Cube add-on. These defaults are based on commonly used dimensions for a given top level dimension (i.e. "Actuals" for "Scenario").
 
 ### Response Format
 
