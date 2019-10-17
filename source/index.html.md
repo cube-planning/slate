@@ -1109,7 +1109,7 @@ r.json()
 
 This endpoint retrieves any values in the cube that make up the overall value at the provided cross section of dimensions. For instance, in the example JSON "Q1-19" was provided as the "Time" dimension and you can see that it returned a value for "Jan-19", "Feb-19", and "Mar-19" which all make up "Q1-19".
 
-Drilling down in to a cube value is very similar to [retrieving data by slices](#get-data-by-slice) in that you are able to pass either the names of the dimensions or their IDs as parameters. A dimension value must be provided for each top level dimension then this endpoint will simply return any numbers that go in to that number.
+Drilling down in to a cube value is very similar to [retrieving data by slices](#get-data-by-slice) in that you are able to pass either the names of the dimensions or their IDs as parameters. A dimension value must be provided for each top level dimension.
 
 ### HTTP Request
 
