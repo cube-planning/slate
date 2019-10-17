@@ -488,7 +488,7 @@ Parameter | Description
 --------- | -----------
 Account | Income Statement
 Department | Consolidated Only
-Time | 2019:Q1
+Time | 2019:Q1-19
 Scenario | Actuals
 
 ### Top Level Dimension Names With IDs Example
@@ -738,7 +738,7 @@ This endpoint can be used to update data in the OLAP cube. The `message` will be
 
 `POST https://portal.cubesoftware.com/api/v1/cube/update`
 
-## Drill Down Into A Value
+## View Details For A Value
 
 ```python
 import requests
@@ -791,7 +791,337 @@ Parameter | Description
 --------- | -----------
 Account | Income Statement:Revenue:Product Revenue
 Department | Consolidated Only
-Time | 2019:Q1:Jan-19
+Time | 2019:Q1-19:Jan-19
+Scenario | Actuals
+
+
+## Drilldowns
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+[
+    {
+        "id": "5615e9dfda074543a10913d8777a2dd5",
+        "value": "88.29",
+        "formula": null,
+        "calculated": false,
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 27179,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Income Statement",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27261,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27262,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Product Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 27184,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Actuals",
+                    "active": true,
+                    "write_protection": "ACTUALS",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Time": [
+                {
+                    "id": 27205,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "2019",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-12-31"
+                },
+                {
+                    "id": 27206,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Q1-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-03-31"
+                },
+                {
+                    "id": 27208,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Feb-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-02-28"
+                }
+            ],
+            "Department": [
+                {
+                    "id": 27182,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Department - Other",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": "DEFAULT",
+                    "date": null
+                }
+            ]
+        },
+        "attributes": {},
+        "splits": []
+    },
+    {
+        "id": "b2ea4a21d64744ef88ac8d6722fe861b",
+        "value": "58.76",
+        "formula": null,
+        "calculated": false,
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 27179,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Income Statement",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27261,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27262,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Product Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 27184,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Actuals",
+                    "active": true,
+                    "write_protection": "ACTUALS",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Time": [
+                {
+                    "id": 27205,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "2019",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-12-31"
+                },
+                {
+                    "id": 27206,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Q1-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-03-31"
+                },
+                {
+                    "id": 27209,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Mar-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-03-31"
+                }
+            ],
+            "Department": [
+                {
+                    "id": 27182,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Department - Other",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": "DEFAULT",
+                    "date": null
+                }
+            ]
+        },
+        "attributes": {},
+        "splits": []
+    },
+    {
+        "id": "d5f014dc9ad34ad289a8655a39c18b82",
+        "value": "969.40",
+        "formula": null,
+        "calculated": false,
+        "dimensions": {
+            "Account": [
+                {
+                    "id": 27179,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Income Statement",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27261,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                },
+                {
+                    "id": 27262,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Product Revenue",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Scenario": [
+                {
+                    "id": 27184,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Actuals",
+                    "active": true,
+                    "write_protection": "ACTUALS",
+                    "special_case_id": null,
+                    "date": null
+                }
+            ],
+            "Time": [
+                {
+                    "id": 27205,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "2019",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-12-31"
+                },
+                {
+                    "id": 27206,
+                    "formula": null,
+                    "has_children": true,
+                    "name": "Q1-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-03-31"
+                },
+                {
+                    "id": 27207,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Jan-19",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": null,
+                    "date": "2019-01-31"
+                }
+            ],
+            "Department": [
+                {
+                    "id": 27182,
+                    "formula": null,
+                    "has_children": false,
+                    "name": "Department - Other",
+                    "active": true,
+                    "write_protection": "NONE",
+                    "special_case_id": "DEFAULT",
+                    "date": null
+                }
+            ]
+        },
+        "attributes": {},
+        "splits": []
+    }
+]
+```
+
+This endpoint retrieves any values in the cube that make up the overall value at the provided cross section of dimensions. For instance, in the example JSON "Q1-19" was provided as the "Time" dimension and you can see that it returned a value for "Jan-19", "Feb-19", and "Mar-19" which all make up "Q1-19".
+
+Drilling down in to a cube value is very similar to [retrieving data by slices](#get-data-by-slice) in that you are able to pass either the names of the dimensions or their IDs as parameters. A dimension value must be provided for each top level dimension.
+
+### HTTP Request
+
+`GET https://portal.cubesoftware.com/api/v1/cube/drilldown`
+
+### Top Level Dimension Names With String Path Names Example
+
+Parameter | Description
+--------- | -----------
+Account | Income Statement:Revenue:Product Revenue
+Department | Consolidated Only
+Time | Q1-19
 Scenario | Actuals
 
 
