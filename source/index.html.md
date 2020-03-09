@@ -165,7 +165,7 @@ r.json()
 ```json
 {
     "name": "New Dimension Name",
-	"parent": 123
+    "parent": 123
 }
 ```
 
@@ -181,6 +181,7 @@ Parameter | Default | Description
 --------- | ------- | -----------
 name | none | The name to use for the dimension
 parent | none | The ID of a dimension to use as the parent for this dimension
+write_protection | NONE | The write protection to use (allowed values include "NONE", "BLOCK", and "ACTUALS")
 
 ## Get Dimensions Tree
 
