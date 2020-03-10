@@ -61,7 +61,7 @@ password | The password for the user
 
 ### HTTP Request
 
-`POST https://portal.cubesoftware.com/api/v1/access_token`
+`POST https://api.cubesoftware.com/v1/access_token`
 
 # Companies
 
@@ -99,7 +99,7 @@ This endpoint retrieves all the companies a user has access to.
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/user/companies`
+`GET https://api.cubesoftware.com/v1/user/companies`
 
 # Attributes
 
@@ -137,7 +137,7 @@ This endpoint retrieves all the attributes of a company.
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/attributes`
+`GET https://api.cubesoftware.com/v1/attributes`
 
 ### Query Parameters
 
@@ -148,6 +148,40 @@ table | none | The ID of an attribute table to limit results to
 # Dimensions
 
 Dimensions store the chart of accounts for a company and outline how their data is structured. All companies have top level dimensions called Account, Scenario, Department, and Time. They also can have custom dimensions.
+
+## Create A Dimension
+
+```python
+import requests
+
+r = requests.get('<url>', headers={
+    'Authorization': 'example-access-token'
+})
+r.json()
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+    "name": "New Dimension Name",
+    "parent": 123
+}
+```
+
+This endpoint creates a dimension.
+
+### HTTP Request
+
+`POST https://api.cubesoftware.com/v1/dimensions`
+
+### Query Parameters
+
+Parameter | Default | Description
+--------- | ------- | -----------
+name | none | The name to use for the dimension
+parent | none | The ID of a dimension to use as the parent for this dimension
+write_protection | NONE | The write protection to use (allowed values include "NONE", "BLOCK", and "ACTUALS")
 
 ## Get Dimensions Tree
 
@@ -266,7 +300,7 @@ This endpoint retrieves a company's dimensions structured in their hierarchy.
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/dimensions/tree`
+`GET https://api.cubesoftware.com/v1/dimensions/tree`
 
 ### Query Parameters
 
@@ -323,7 +357,7 @@ This endpoint retrieves all the deepest level dimensions for a company.
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/dimensions/deepest`
+`GET https://api.cubesoftware.com/v1/dimensions/deepest`
 
 # OLAP Cube Data
 
@@ -521,7 +555,7 @@ Parameter | Description
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/cube`
+`GET https://api.cubesoftware.com/v1/cube`
 
 ### Query Parameters
 
@@ -691,7 +725,7 @@ Like [retrieving data by slices](#get-data-by-slice), you are able to pass eithe
 
 ### HTTP Request
 
-`POST https://portal.cubesoftware.com/api/v1/cube/pivot`
+`POST https://api.cubesoftware.com/v1/cube/pivot`
 
 ## Update Data
 
@@ -736,7 +770,7 @@ This endpoint can be used to update data in the OLAP cube. The `message` will be
 
 ### HTTP Request
 
-`POST https://portal.cubesoftware.com/api/v1/cube/update`
+`POST https://api.cubesoftware.com/v1/cube/update`
 
 ## View Details For A Value
 
@@ -783,7 +817,7 @@ Retrieving single cube value data is very similar to [retrieving data by slices]
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/cube/value`
+`GET https://api.cubesoftware.com/v1/cube/value`
 
 ### Top Level Dimension Names With String Path Names Example
 
@@ -1113,7 +1147,7 @@ Drilling down in to a cube value is very similar to [retrieving data by slices](
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/cube/drilldown`
+`GET https://api.cubesoftware.com/v1/cube/drilldown`
 
 ### Top Level Dimension Names With String Path Names Example
 
@@ -1212,7 +1246,7 @@ filters | dictionary | Format: `{top level dimension id: [one filter dimension]}
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/templates`
+`GET https://api.cubesoftware.com/v1/templates`
 
 
 ## Create Report Template
@@ -1300,7 +1334,7 @@ Templates](#retrieve-report-templates) for more information on JSON format and e
 
 ### HTTP Request
 
-`POST https://portal.cubesoftware.com/api/v1/templates`
+`POST https://api.cubesoftware.com/v1/templates`
 
 
 ## Retrieve One Report Template
@@ -1320,7 +1354,7 @@ See [Retrieve Report Templates](#retrieve-report-templates) for more information
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/templates/<id>`
+`GET https://api.cubesoftware.com/v1/templates/<id>`
 
 
 ## Update Report Template
@@ -1404,7 +1438,7 @@ See [Create Report Template](#create-report-template) for details on format and 
 
 ### HTTP Request
 
-`POST/PUT https://portal.cubesoftware.com/api/v1/templates/<id>`
+`POST/PUT https://api.cubesoftware.com/v1/templates/<id>`
 
 # User Settings
 
@@ -1460,4 +1494,4 @@ selected_id | integer | The selected dimension (will be a child of the top level
 
 ### HTTP Request
 
-`GET https://portal.cubesoftware.com/api/v1/user/settings/spreadsheets`
+`GET https://api.cubesoftware.com/v1/user/settings/spreadsheets`
