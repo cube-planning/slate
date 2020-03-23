@@ -8,7 +8,16 @@
 }
 ```
 
-The API uses the following error codes:
+> For some endpoints (i.e. `/access_token`) an error code may also be provided:
+
+```json
+{
+    "error": "Error message",
+    "code": "ERROR_CODE"
+}
+```
+
+The API uses the following HTTP error codes:
 
 Error Code | Meaning
 ---------- | -------
