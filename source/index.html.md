@@ -44,6 +44,13 @@ r.json()
 ```json
 {
     "access_token": "example-access-token",
+    "user": {
+        "created_at": "2019-11-16T13:02:01.076997+00:00",
+        "first_name": "Dan",
+        "last_name": "Bricklin",
+        "email": "email@company.com",
+        "id": 1
+    },
     "company": {
         "id": "6a42ac12-ea84-490b-85b9-e80eaf5a72de",
         "created_at": "2019-06-23T16:32:38.249315+00:00",
@@ -54,10 +61,13 @@ r.json()
 
 This endpoint retrieves an access token for a user at a company. It also provides some information about the company the access token was authenticated against for the given user.
 
+In the event the user has 2FA enabled, an error code of "2FA_REQUIRED" will be returned. A subsequent call with `2fa_token` provided should then be made to authenticate the user properly.
+
 Parameter | Description
 --------- | -----------
 email | The user's email address
 password | The password for the user
+2fa_token | The token for the user if they have 2FA enabled
 
 ### HTTP Request
 
