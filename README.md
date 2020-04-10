@@ -45,7 +45,9 @@ If you'd prefer to use Docker, instructions are available [in the wiki](https://
 
 ### Deployments
 
-Inside of Docker:
+Use `bundle exec middleman build --clean` on your local machine to build the assets. Then upload those assets to S3.
+
+Inside of Docker (note: this no longer seems to work):
 
 ```
 bundle exec middleman build --clean
