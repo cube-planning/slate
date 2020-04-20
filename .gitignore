@@ -19,6 +19,7 @@ build/
 
 # Build artifacts
 source/latest
+vendor/
 
 # YARD artifacts
 .yardoc
