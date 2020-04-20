@@ -1168,6 +1168,73 @@ Department | Consolidated Only
 Time | Q1-19
 Scenario | Actuals
 
+# Currencies
+
+Cube supports fetching data in other currencies as long as the company has the alternate currency enabled.
+
+All currency requests must be made via the [Pivot (rows/columns) endpoint](#get-data-by-rows-columns).
+
+## Fetch in an Alternate Currency
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': '<your-access-token>'
+})
+r.json()
+```
+
+> The above request expects a `data` JSON structured like:
+
+```json
+{
+    "currency": {
+        "code": "GBP",
+        "custom_rates": {}
+    },
+    "dimensions": {
+        "filters": {
+            "Department": "Consolidated Only"
+        },
+        "rows": [
+            [
+                "Revenue",
+                "COGS"
+            ]
+        ],
+        "columns": [
+            [
+                "Actuals",
+                "Actuals"
+            ],
+            [
+                "Jan-19",
+                "Feb-19"
+            ]
+        ]
+    }
+}
+```
+
+You can send currency information to the [Pivot (rows/columns) endpoint](#get-data-by-rows-columns).
+
+### `currency` JSON Keys
+
+Key | Description
+--- | -----------
+code | A three-letter currency code (the currency must be enabled for your company)
+custom_rates | User-specified rates that override the historical rates (see below)
+
+### `custom_rates` JSON keys
+
+Custom rates override historical rates for a given time period.
+
+Key | Description
+--- | -----------
+past | Override rate for past months' data, as a string (e.g. "1.25")
+current | Override rate for this month's data, as a string (e.g. "1.25")
+future | Override rate for future months' data, as a string (e.g. "1.25")
 
 # Report Templates
 
@@ -1270,7 +1337,7 @@ r = requests.post('<url>', data=data, headers={
 r.json()
 ```
 
-> The above request requires a `data` JSON file structured like this:
+> The above request requires a `data` JSON structured like this:
 
 ```json
 {
