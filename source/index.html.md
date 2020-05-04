@@ -373,7 +373,7 @@ This endpoint retrieves all the deepest level dimensions for a company.
 
 The data stored in the OLAP cube for a company, organized by its dimensions.
 
-## Get Data By Slice
+## Get Data By Slice (Deprecated)
 
 ```python
 import requests
@@ -521,6 +521,8 @@ r.json()
     }
 ]
 ```
+
+**Note**: This endpoint is deprecated. Please use the [pivot (rows/columns) endpoint](#get-data-by-rows-columns) instead.
 
 This endpoint retrieves values stored in the OLAP cube for a given company. Any record with a `null` ID is a calculated value (i.e. rollups) whereas records with IDs are values explicitly stored in the cube. It is most useful when only one dimension exists in the rows of the data and one dimension exists in the columns of the data.
 
@@ -1168,6 +1170,75 @@ Department | Consolidated Only
 Time | Q1-19
 Scenario | Actuals
 
+# Currencies
+
+Cube supports fetching data in other currencies as long as the company has the alternate currency enabled.
+
+All currency requests must be made via the [pivot (rows/columns) endpoint](#get-data-by-rows-columns).
+
+## Fetch in an Alternate Currency
+
+```python
+import requests
+
+r = requests.post('<url>', data=data, headers={
+    'Authorization': '<your-access-token>'
+})
+r.json()
+```
+
+> The above request expects a `data` JSON object structured like:
+
+```json
+{
+    "currency": {
+        "code": "GBP",
+        "custom_rates": {
+            "past": "1.234567"
+        }
+    },
+    "dimensions": {
+        "filters": {
+            "Department": "Consolidated Only"
+        },
+        "rows": [
+            [
+                "Revenue",
+                "COGS"
+            ]
+        ],
+        "columns": [
+            [
+                "Actuals",
+                "Actuals"
+            ],
+            [
+                "Jan-19",
+                "Feb-19"
+            ]
+        ]
+    }
+}
+```
+
+You can send currency information to the [pivot (rows/columns) endpoint](#get-data-by-rows-columns).
+
+### `currency` JSON Keys
+
+Key | Description
+--- | -----------
+code | A three-letter currency code (the currency must be enabled for your company)
+custom_rates | User-specified rates that override the historical rates (see below)
+
+### `custom_rates` JSON keys
+
+Custom rates override historical rates for a given time period.
+
+Key | Description
+--- | -----------
+past | Override rate for past months' data, as a string (e.g. "1.25")
+current | Override rate for this month's data, as a string (e.g. "1.25")
+future | Override rate for future months' data, as a string (e.g. "1.25")
 
 # Report Templates
 
@@ -1270,7 +1341,7 @@ r = requests.post('<url>', data=data, headers={
 r.json()
 ```
 
-> The above request requires a `data` JSON file structured like this:
+> The above request requires a `data` JSON object structured like this:
 
 ```json
 {
