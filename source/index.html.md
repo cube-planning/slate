@@ -71,7 +71,95 @@ password | The password for the user
 
 ### HTTP Request
 
-`POST https://api.cubesoftware.com/v1/access_token`
+`POST https://api.cubesoftware.com/v1/auth/access_token`
+
+## List 2FA Devices
+
+```python
+import requests
+
+r = requests.post('<url>', data={
+    'email': 'user@domain.com',
+    'password': '1234'
+})
+r.json()
+```
+
+> The above request returns a JSON structured like:
+
+```json
+{
+    "devices": [
+        {
+            "name": "backup",
+            "is_interactive": false,
+            "message": "Lost your device? Enter a backup code"
+        },
+        {
+            "name": "default",
+            "is_interactive": true,
+            "message": "Send text message to +1 ***-***-**19"
+        }
+    ]
+}
+```
+
+This endpoint lists all a user's verified two factor authentication devices.
+
+Parameter | Description
+--------- | -----------
+email | The user's email address
+password | The password for the user
+
+Each device has relevant information about next steps stored in a dictionary:
+
+Key | Value
+--- | -----
+name | The name of this device for internal lookups
+is_interactive | Whether this device needs to generate a challenge (e.g. send an SMS, email, etc)
+message | Human-friendly copy describing the action for this device
+
+Note: A device such as an authenticator app will have `is_interacive: false` because the user already has the
+token they need by accessing the app.
+
+### HTTP Request
+
+`POST https://api.cubesoftware.com/v1/auth/two_factor/devices`
+
+## Generate 2FA Challenge
+
+```python
+import requests
+
+r = requests.post('<url>', data={
+    'email': 'user@domain.com',
+    'password': '1234',
+    'device_name': 'default'
+})
+r.json()
+```
+
+> The above request returns a JSON structured like:
+
+```json
+{
+    "success": true,
+    "mesage": null
+}
+```
+
+This endpoint generates a challenge for interactive two factor authentication devices (e.g. send an SMS, start
+a phone call, or send an email with the token)
+
+Parameter | Description
+--------- | -----------
+email | The user's email address
+password | The password for the user
+device_name | The internal device name (e.g. "default", "backup")
+
+### HTTP Request
+
+`POST https://api.cubesoftware.com/v1/auth/two_factor/challenge`
 
 # Companies
 
