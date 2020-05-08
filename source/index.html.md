@@ -61,13 +61,21 @@ r.json()
 
 This endpoint retrieves an access token for a user at a company. It also provides some information about the company the access token was authenticated against for the given user.
 
-In the event the user has 2FA enabled, an error code of "2FA_REQUIRED" will be returned. A subsequent call with `2fa_token` provided should then be made to authenticate the user properly.
+In the event the user has 2FA enabled, an error code of `"2FA_REQUIRED"` will be returned. A subsequent call with `2fa_token` provided should then be made to authenticate the user properly.
 
 Parameter | Description
 --------- | -----------
 email | The user's email address
 password | The password for the user
 2fa_token | The token for the user if they have 2FA enabled
+
+Error responses to this endpoint include a `"code"` to help decode the specific error occurring.
+
+Error Code | Description
+--------- | -----------
+INVALID_CREDENTIALS | The email address and password do not match
+2FA_REQUIRED | The email and address are correct, but a 2FA token is also required
+INVALID_2FA_CODE | The provided 2FA code was not accepted
 
 ### HTTP Request
 
@@ -149,13 +157,20 @@ r.json()
 ```
 
 This endpoint generates a challenge for interactive two factor authentication devices (e.g. send an SMS, start
-a phone call, or send an email with the token)
+a phone call, or send an email with the token).
 
 Parameter | Description
 --------- | -----------
 email | The user's email address
 password | The password for the user
 device_name | The internal device name (e.g. "default", "backup")
+
+Error responses to this endpoint include a `"code"` to help decode the specific error occurring.
+
+Error Code | Description
+--------- | -----------
+NO_CHALLENGE | This device is not interactive (i.e. not capable of generating a challenge)
+NO_SUCH_DEVICE | The given device could not be found
 
 ### HTTP Request
 
